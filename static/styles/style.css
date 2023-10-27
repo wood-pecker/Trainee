@@ -1,0 +1,54 @@
+*{
+padding: 0;
+margin:0;
+}
+body {
+
+	background-image: url(images/background.webp);
+}
+.top-header{
+	background-color: #525252;
+	width: 100%;
+	height: 25px;
+	color: #e8eaed;
+}
+.header-content{
+	background-color: #ffffff;
+	width: 100%;
+	height: 50px;
+	font-family: 'Roboto', sans-serif;
+	color: #525252;
+	border-bottom: 1px solid #525252;
+}
+
+.main-navigation {
+	padding-top: 10px;
+	display: flex;
+	align-items: center;
+	align-content: center;
+    justify-content: center;
+	/*width: 35%;
+	margin-left: 35%;*/
+
+}
+.main-navigation a {
+	text-decoration: none; /*убираем подчеркивание текста ссылок*/
+	font-size: 20px;
+	text-align: center;
+	color: #000000;
+	padding: 5px;
+	border: 3px solid transparent; /*прозрачная рамка вокруг ссылки*/
+	border-radius: 5%;
+}
+.main-navigation a:hover {
+	border-color: #ffdb3b;
+}
+.main-navigation ul{
+  list-style: none; /*убираем маркеры списка*/
+  margin: 0; /*убираем верхнее и нижнее поле, равное 1em*/
+  padding-left: 0; /*убираем левый отступ, равный 40px*/
+}
+.main-navigation ul li{
+	display: inline-block;
+	margin-right: 10px;
+}
