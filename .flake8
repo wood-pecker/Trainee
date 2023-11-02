@@ -1,0 +1,10 @@
+[flake8]
+max-line-length = 80
+exclude =
+    .git,
+    __pycache__,
+    .venv
+    .vscode
+    static
+    templates
+    migrations/versions/
