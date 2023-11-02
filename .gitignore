@@ -1,3 +1,6 @@
 .idea/
 pycache/
 trainee-env/
+.vscode/
+notes.md
+.venv/
