@@ -1,10 +1,46 @@
-# TODO: ask about path to users.json
-# TODO: is response code required
-
-
-from flask import Flask, render_template, request, Response, url_for
+from flask import Flask, render_template, request, Response, url_for, jsonify
 import json
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+
 app = Flask(__name__)
+
+
+SQLALCHEMY_DATABASE_URL = (
+    "postgresql://postgres:postgres@localhost:5432/trainee"
+)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URL
+
+
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+Session = sessionmaker(bind=engine)
+Base = declarative_base()
+
+
+class Note(Base):
+    __tablename__ = 'notes'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    content = Column(String, nullable=False)
+
+    def init(self, content):
+        self.content = content
+
+
+#@app.route('/notes', methods=['GET']) - должен возвращать HTML со всеми Notes
+@app.route('/notes/<int:id>', methods=['GET'])
+def get_note(id):
+    session = Session()
+    note = session.query(Note).filter_by(id=id).first()
+    session.close()
+    if note:
+        return jsonify({'id': note.id, 'content': note.content})
+    result = jsonify({'error': 'Note not found'}), 404
+    return result
+
 
 
 @app.route('/')
