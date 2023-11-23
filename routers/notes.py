@@ -11,10 +11,18 @@ notes_bp = Blueprint('route', __name__)
 def get_note(id):
     session = Session()
     note = session.query(Note).filter_by(id=id).first()
-    # todo: Добавить логику на увеличение кол-ва просмотров
-    session.close()
+    session.expunge_all()   # It works, but I don't know how
     if note:
-        return jsonify({'Note': note.content}), 200
+        session.query(Note).filter(Note.id==id).update({Note.views_amount: Note.views_amount + 1})
+        session.commit()
+        session.close()
+        return jsonify(
+            {
+            note.id: [note.content, note.created_at, note.updated_at, note.views_amount+1]
+            }
+                    ), 200
+    
+    session.close()
     return jsonify({'Error': 'Note not found'}), 404
 
 
@@ -42,6 +50,35 @@ def add_note():
         session = Session()
         note = Note(content)
         session.add(note)
+        session.commit()
+        session.close()
+        return redirect(url_for('notes_bp.get_notes'))
+    
+    if request.method == 'GET':
+        return render_template('note.html')
+    
+    
+@notes_bp.route('/del-note/<int:id>')
+def delete_note(id):
+    session = Session()
+    session.query(Note).filter(Note.id==id).delete()
+    session.commit()
+    session.close()
+    return redirect(url_for('notes_bp.get_notes'))
+
+
+@notes_bp.route('/edit-note/<int:id>', methods=['GET', 'POST'])
+def update_note(id):
+    # session = Session()
+    # note = session.query(Note).filter_by(id=id).first()
+    # session.close()
+    # yield jsonify({'Current content': note.content}), 200
+    if request.method == 'POST':
+        new_content = request.form.get('content')  
+        if not new_content:
+            return jsonify({'Error': 'Content must exist'}), 404
+        session = Session()
+        session.query(Note).filter(Note.id==id).update({Note.content: new_content})
         session.commit()
         session.close()
         return redirect(url_for('notes_bp.get_notes'))
